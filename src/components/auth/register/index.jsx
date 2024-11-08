@@ -3,23 +3,51 @@ import { Navigate, Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../../contexts/authContext";
 import { doCreateUserWithEmailAndPassword } from "../../../firebase/auth";
 import { CurrencyDollarIcon } from "@heroicons/react/24/solid";
+import { getFirestore, doc, setDoc } from "firebase/firestore";
 
 const Register = () => {
   const navigate = useNavigate();
+  const { userLoggedIn } = useAuth();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setconfirmPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [isRegistering, setIsRegistering] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  const { userLoggedIn } = useAuth();
+  const db = getFirestore();
 
   const onSubmit = async (e) => {
     e.preventDefault();
+    setErrorMessage("");
+
+    if (password !== confirmPassword) {
+      setErrorMessage("Passwords do not match");
+      return;
+    }
+
     if (!isRegistering) {
       setIsRegistering(true);
-      await doCreateUserWithEmailAndPassword(email, password);
+      try {
+        const userCredential = await doCreateUserWithEmailAndPassword(
+          email,
+          password
+        );
+        const user = userCredential.user;
+
+        await setDoc(doc(db, "users", user.uid), {
+          uid: user.uid,
+          email: user.email,
+          createdAt: new Date(),
+        });
+
+        navigate("/home");
+      } catch (error) {
+        console.error("Error during registration:", error);
+        setErrorMessage(error.message);
+      } finally {
+        setIsRegistering(false);
+      }
     }
   };
 
@@ -40,15 +68,15 @@ const Register = () => {
         <div className="w-[500px] h-[600px] bg-[#7EA172] space-y-5 p-4 filter drop-shadow-[-8px_4px_10px_rgba(0,0,0,0.55)]">
           <form onSubmit={onSubmit} className="space-y-5">
             <div>
-              <label className="font-montserrat font-semibold text-[40px] text-black">Email</label>
+              <label className="font-montserrat font-semibold text-[40px] text-black">
+                Email
+              </label>
               <input
                 type="email"
                 autoComplete="email"
                 required
                 value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                }}
+                onChange={(e) => setEmail(e.target.value)}
                 className="w-full mt-2 px-3 py-2 text-black bg-white outline-none"
               />
             </div>
@@ -63,9 +91,7 @@ const Register = () => {
                 autoComplete="new-password"
                 required
                 value={password}
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                }}
+                onChange={(e) => setPassword(e.target.value)}
                 className="w-full mt-2 px-3 py-2 text-black bg-white outline-none"
               />
             </div>
@@ -80,9 +106,7 @@ const Register = () => {
                 autoComplete="off"
                 required
                 value={confirmPassword}
-                onChange={(e) => {
-                  setconfirmPassword(e.target.value);
-                }}
+                onChange={(e) => setConfirmPassword(e.target.value)}
                 className="w-full mt-2 mb-6 px-3 py-2 text-black bg-white outline-none"
               />
             </div>
@@ -103,11 +127,8 @@ const Register = () => {
               {isRegistering ? "Signing Up..." : "Sign Up"}
             </button>
             <div className="text-center text-[22px] text-white font-montserrat font-semibold">
-              Already have an account? {"   "}
-              <Link
-                to={"/login"}
-                className="underline"
-              >
+              Already have an account?{" "}
+              <Link to={"/login"} className="underline">
                 Continue
               </Link>
             </div>
