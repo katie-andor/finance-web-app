@@ -11,6 +11,10 @@ import 'react-toastify/dist/ReactToastify.css';
 function App() {
   const routesArray = [
     {
+      path: "/",
+      element: <Login />,
+    },
+    {
       path: "/login",
       element: <Login />,
     },
