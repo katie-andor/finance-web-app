@@ -1,28 +1,53 @@
-import React from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { useAuth } from '../../contexts/authContext'
-import { doSignOut } from '../../firebase/auth'
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../contexts/authContext";
+import { doSignOut } from "../../firebase/auth";
+import { XMarkIcon } from "@heroicons/react/24/solid";
 
 const Header = () => {
-    const navigate = useNavigate()
-    const { userLoggedIn } = useAuth()
-    return (
-        <nav className='flex flex-row gap-x-2 w-full z-20 fixed top-0 left-0 h-12 border-b place-content-center items-center bg-gray-200'>
-            {
-                userLoggedIn
-                    ?
-                    <>
-                        <button onClick={() => { doSignOut().then(() => { navigate('/login') }) }} className='text-sm text-blue-600 underline'>Logout</button>
-                    </>
-                    :
-                    <>
-                        <Link className='text-sm text-blue-600 underline' to={'/login'}>Login</Link>
-                        <Link className='text-sm text-blue-600 underline' to={'/register'}>Register New Account</Link>
-                    </>
-            }
+  const navigate = useNavigate();
+  const { currentUser } = useAuth();
+  const { userLoggedIn } = useAuth();
 
-        </nav>
-    )
-}
+  return (
+    <nav className="w-full top-0 left-0 h-20 bg-[#7EA172] flex items-center justify-between">
+      <button>
+        <XMarkIcon width={40} className="m-2" />
+      </button>
+      {userLoggedIn ? (
+        <>
+          <button
+            onClick={() => {
+              doSignOut().then(() => {
+                navigate("/login");
+              });
+            }}
+            className="font-montserrat font-semibold text-[22px] text-blue-600 underline"
+          >
+            Logout
+          </button>
+        </>
+      ) : (
+        <>
+          <Link
+            className="font-montserrat font-semibold text-[22px] text-blue-600 underline"
+            to={"/login"}
+          >
+            Login
+          </Link>
+          <Link
+            className="font-montserrat font-semibold text-[22px] text-blue-600 underline"
+            to={"/register"}
+          >
+            Register New Account
+          </Link>
+        </>
+      )}
+      <div className="font-montserrat font-semibold text-[22px]">
+        Hello{", "}
+        {currentUser.displayName ? currentUser.displayName : currentUser.email}
+      </div>
+    </nav>
+  );
+};
 
-export default Header
+export default Header;
