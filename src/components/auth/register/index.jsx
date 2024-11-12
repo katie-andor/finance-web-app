@@ -41,7 +41,7 @@ const Register = () => {
           createdAt: new Date(),
         });
 
-        navigate("/home");
+        navigate("/home/dashboard");
       } catch (error) {
         console.error("Error during registration:", error);
         setErrorMessage(error.message);
@@ -53,7 +53,7 @@ const Register = () => {
 
   return (
     <>
-      {userLoggedIn && <Navigate to={"/home"} replace={true} />}
+      {userLoggedIn && <Navigate to={"/home/dashboard"} replace={true} />}
 
       <main className="min-h-screen flex flex-row flex-wrap justify-around items-center">
         <div>
