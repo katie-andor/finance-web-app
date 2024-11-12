@@ -17,10 +17,16 @@ const Login = () => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
+    setErrorMessage(""); // Clear any previous errors
     if (!isSigningIn) {
       setIsSigningIn(true);
-      await doSignInWithEmailAndPassword(email, password);
-      // doSendEmailVerification()
+      try {
+        await doSignInWithEmailAndPassword(email, password);
+      } catch (error) {
+        setErrorMessage("Your email and password don't match");
+      } finally {
+        setIsSigningIn(false);
+      }
     }
   };
 
