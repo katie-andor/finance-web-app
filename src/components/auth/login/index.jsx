@@ -5,7 +5,7 @@ import {
   doSignInWithGoogle,
 } from "../../../firebase/auth";
 import { useAuth } from "../../../contexts/authContext";
-import { CurrencyDollarIcon } from '@heroicons/react/24/solid';
+import { CurrencyDollarIcon } from "@heroicons/react/24/solid";
 import { toast } from "react-toastify";
 
 const Login = () => {
@@ -21,9 +21,11 @@ const Login = () => {
     setErrorMessage(""); // Clear any previous errors
     if (!isSigningIn) {
       setIsSigningIn(true);
-      toast.success("Succesfully logged in!")
       try {
         await doSignInWithEmailAndPassword(email, password);
+        toast.success("Succesfully logged in!", {
+          autoClose: 2000,
+        });
       } catch (error) {
         setErrorMessage("Your email and password don't match");
       } finally {
@@ -36,7 +38,7 @@ const Login = () => {
     e.preventDefault();
     if (!isSigningIn) {
       setIsSigningIn(true);
-      toast.success("Succesfully logged in!")
+      toast.success("Succesfully logged in!");
       doSignInWithGoogle().catch((err) => {
         setIsSigningIn(false);
       });
@@ -53,13 +55,16 @@ const Login = () => {
             Welcome Back!
             <br />
             Let’s Save <br />
-            Some <span className="text-[#7EA172]">Money</span> <CurrencyDollarIcon className="inline" width={70}/>
+            Some <span className="text-[#7EA172]">Money</span>{" "}
+            <CurrencyDollarIcon className="inline" width={70} />
           </h1>
         </div>
         <div className="w-[500px] h-[600px] bg-[#7EA172] space-y-5 p-4 filter drop-shadow-[-8px_4px_10px_rgba(0,0,0,0.55)]">
           <form onSubmit={onSubmit} className="space-y-5">
             <div>
-              <label className="font-montserrat font-semibold text-[40px] text-black">Email</label>
+              <label className="font-montserrat font-semibold text-[40px] text-black">
+                Email
+              </label>
               <input
                 type="email"
                 autoComplete="email"
@@ -112,7 +117,9 @@ const Login = () => {
           </p>
           <div className="flex flex-row text-center w-full">
             <div className="border-b-2 mb-2.5 mr-2 w-full"></div>
-            <div className="text-[20px] text-white font-montserrat font-semibold w-fit">OR</div>
+            <div className="text-[20px] text-white font-montserrat font-semibold w-fit">
+              OR
+            </div>
             <div className="border-b-2 mb-2.5 ml-2 w-full"></div>
           </div>
           <button
