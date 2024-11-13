@@ -6,6 +6,7 @@ import {
 } from "../../../firebase/auth";
 import { useAuth } from "../../../contexts/authContext";
 import { CurrencyDollarIcon } from '@heroicons/react/24/solid';
+import { toast } from "react-toastify";
 
 const Login = () => {
   const { userLoggedIn } = useAuth();
@@ -20,6 +21,7 @@ const Login = () => {
     setErrorMessage(""); // Clear any previous errors
     if (!isSigningIn) {
       setIsSigningIn(true);
+      toast.success("Succesfully logged in!")
       try {
         await doSignInWithEmailAndPassword(email, password);
       } catch (error) {
@@ -34,6 +36,7 @@ const Login = () => {
     e.preventDefault();
     if (!isSigningIn) {
       setIsSigningIn(true);
+      toast.success("Succesfully logged in!")
       doSignInWithGoogle().catch((err) => {
         setIsSigningIn(false);
       });
