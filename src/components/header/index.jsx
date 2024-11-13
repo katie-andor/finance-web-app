@@ -9,7 +9,7 @@ const Header = () => {
   const { userLoggedIn } = useAuth();
 
   return (
-    <nav className="w-full top-0 left-0 h-20 bg-[#dd4423] flex items-center justify-between">
+    <nav className="w-full top-0 left-0 h-20 bg-[#7EA172] flex items-center justify-between">
       <button>
         <XMarkIcon width={40} className="m-2" />
       </button>
