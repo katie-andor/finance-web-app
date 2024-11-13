@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/authContext";
 import { doSignOut } from "../../firebase/auth";
-import { XMarkIcon } from "@heroicons/react/24/solid";
+import { ArrowLeftCircleIcon } from "@heroicons/react/24/outline";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -11,7 +11,7 @@ const Header = () => {
   return (
     <nav className="w-full top-0 left-0 h-20 bg-[#7EA172] flex items-center justify-between">
       <button>
-        <XMarkIcon width={40} className="m-2" />
+        <ArrowLeftCircleIcon width={40} className="m-2" />
       </button>
       {userLoggedIn ? (
         <>

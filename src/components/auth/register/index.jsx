@@ -4,6 +4,7 @@ import { useAuth } from "../../../contexts/authContext";
 import { doCreateUserWithEmailAndPassword } from "../../../firebase/auth";
 import { CurrencyDollarIcon } from "@heroicons/react/24/solid";
 import { getFirestore, doc, setDoc } from "firebase/firestore";
+import { toast } from "react-toastify";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -41,9 +42,11 @@ const Register = () => {
           createdAt: new Date(),
         });
 
-        navigate("/home");
+        toast.success("Succesfully logged in!");
+        navigate("/home/dashboard");
       } catch (error) {
         console.error("Error during registration:", error);
+        toast.error("There was an error creating your account.");
         setErrorMessage(error.message);
       } finally {
         setIsRegistering(false);
@@ -53,7 +56,7 @@ const Register = () => {
 
   return (
     <>
-      {userLoggedIn && <Navigate to={"/home"} replace={true} />}
+      {userLoggedIn && <Navigate to={"/home/dashboard"} replace={true} />}
 
       <main className="min-h-screen flex flex-row flex-wrap justify-around items-center">
         <div>
