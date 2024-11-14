@@ -1,7 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/authContext";
 import { doSignOut } from "../../firebase/auth";
-import { ArrowLeftCircleIcon } from "@heroicons/react/24/outline";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -9,10 +8,11 @@ const Header = () => {
   const { userLoggedIn } = useAuth();
 
   return (
-    <nav className="w-full top-0 left-0 h-20 bg-[#7EA172] flex items-center justify-between">
-      <button>
-        <ArrowLeftCircleIcon width={40} className="m-2" />
-      </button>
+    <nav className="w-full top-0 left-0 h-20 bg-[#7EA172] flex items-center justify-between p-2">
+      <div className="font-montserrat font-bold text-[22px] ">
+        Hello{", "}
+        {currentUser.displayName ? currentUser.displayName : currentUser.email}
+      </div>
       {userLoggedIn ? (
         <>
           <button
@@ -21,7 +21,7 @@ const Header = () => {
                 navigate("/login");
               });
             }}
-            className="font-montserrat font-semibold text-[22px] text-blue-600 underline"
+            className="font-montserrat font-semibold text-[22px] text-black hover:underline bg-white rounded-xl p-2 pl-4 pr-4"
           >
             Logout
           </button>
@@ -42,10 +42,6 @@ const Header = () => {
           </Link>
         </>
       )}
-      <div className="font-montserrat font-semibold text-[22px]">
-        Hello{", "}
-        {currentUser.displayName ? currentUser.displayName : currentUser.email}
-      </div>
     </nav>
   );
 };
