@@ -11,6 +11,7 @@ import Dashboard from "./components/user/dashboard.jsx";
 import Groups from "./components/user/groups.jsx";
 import Subscriptions from "./components/user/subscriptions.jsx";
 import Budgets from "./components/user/budgets.jsx";
+import Notifications from "./components/user/notifications.jsx";
 
 function App() {
   const routesArray = [
@@ -45,6 +46,10 @@ function App() {
         {
           path: "budgets",
           element: <Budgets/>
+        },
+        {
+          path: "notifications",
+          element: <Notifications />
         },
       ],
     },

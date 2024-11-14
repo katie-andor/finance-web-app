@@ -32,9 +32,11 @@ const Sidebar = () => {
           Recurring <br /> Payments
         </h2>
       </button>
-      <button className="font-montserrat font-semibold text-center rounded-md bg-white p-2 w-[160px] ml-2 mr-2 hover:bg-black hover:text-white">
-        <h2>Notifications</h2>
-      </button>
+      <Link to="/home/notifications">
+        <button className="font-montserrat font-semibold text-center rounded-md bg-white p-2 w-[160px] ml-2 mr-2 hover:bg-black hover:text-white">
+          <h2>Notifications</h2>
+        </button>
+      </Link>
     </div>
   );
 };
