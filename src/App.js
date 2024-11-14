@@ -9,6 +9,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Main from "./layouts/main.jsx";
 import Dashboard from "./components/user/dashboard.jsx";
 import Groups from "./components/user/groups.jsx";
+import Subscriptions from "./components/user/subscriptions.jsx";
 
 function App() {
   const routesArray = [
@@ -35,6 +36,10 @@ function App() {
         {
           path: "groups",
           element: <Groups />,
+        },
+        {
+          path: "subscriptions",
+          element: <Subscriptions />,
         },
       ],
     },

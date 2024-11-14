@@ -14,9 +14,11 @@ const Sidebar = () => {
           <h2>Groups</h2>
         </button>
       </Link>
-      <button className="font-montserrat font-semibold text-center rounded-md bg-white p-2 w-[160px] ml-2 mr-2 hover:bg-black hover:text-white">
-        <h2>Subscriptions</h2>
-      </button>
+      <Link to="/home/subscriptions">
+        <button className="font-montserrat font-semibold text-center rounded-md bg-white p-2 w-[160px] ml-2 mr-2 hover:bg-black hover:text-white">
+          <h2>Subscriptions</h2>
+        </button>
+      </Link>
       <button className="font-montserrat font-semibold text-center rounded-md bg-white p-2 w-[160px] ml-2 mr-2 hover:bg-black hover:text-white">
         <h2>Budgets</h2>
       </button>
