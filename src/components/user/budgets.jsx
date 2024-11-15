@@ -131,6 +131,14 @@ const Budgets = () => {
       return;
     }
 
+    const totalItemsCost = calculateItemTotal(newBudget.items);
+
+    if (totalItemsCost + newItem.cost > newBudget.amount) {
+      alert(
+        "Item cost exceeds the total budget amount. Please adjust your items."
+      );
+      return;
+    }
     setNewBudget((prevState) => ({
       ...prevState,
       items: [...prevState.items, newItem],
