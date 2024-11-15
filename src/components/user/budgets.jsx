@@ -26,6 +26,7 @@ const Budgets = () => {
     items: [],
     category: "",
   });
+  
   const [newItem, setNewItem] = useState({
     name: "",
     cost: 0,
@@ -45,7 +46,7 @@ const Budgets = () => {
       case "Bills":
         return billicon;
       default:
-        return foodicon; // Default icon
+        return foodicon; 
     }
   };
 
@@ -231,11 +232,14 @@ const Budgets = () => {
                   <h2 className="m-2 font-extrabold text-[32px]">
                     {budget.title}
                   </h2>
-                  <XMarkIcon
-                    width={35}
-                    className="mr-2 cursor-pointer"
-                    onClick={() => handleDeleteBudget(budget.id)}
-                  />
+                  <div className="flex flex-row">
+                    <PlusIcon width={35} className="mr-2 cursor-pointer" />
+                    <XMarkIcon
+                      width={35}
+                      className="mr-2 cursor-pointer"
+                      onClick={() => handleDeleteBudget(budget.id)}
+                    />
+                  </div>
                 </div>
                 <div className="flex flex-col mt-4">
                   <div className="flex flex-row">
