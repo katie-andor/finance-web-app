@@ -4,14 +4,14 @@ import foodicon from "../../images/food_icon.svg";
 import travelicon from "../../images/travel_icon.svg";
 import funicon from "../../images/fun_icon.svg";
 import billicon from "../../images/bill_icon.svg";
-import { XMarkIcon } from "@heroicons/react/24/solid";
+import { PlusIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import { db } from "../../firebase/firebase";
 import {
   collection,
   getDocs,
   addDoc,
   doc,
-  deleteDoc, 
+  deleteDoc,
   updateDoc,
 } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
@@ -34,7 +34,8 @@ const Budgets = () => {
 
   const colors = ["#C7CB85", "#E7A977", "#EBBE9B", "#EBBE9B"];
 
-  const getRandomColor = () => colors[Math.floor(Math.random() * colors.length)];
+  const getRandomColor = () =>
+    colors[Math.floor(Math.random() * colors.length)];
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -62,7 +63,7 @@ const Budgets = () => {
         const budgetsData = querySnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
-          color: getRandomColor(), 
+          color: getRandomColor(),
         }));
         setBudgets(budgetsData);
       } catch (error) {
@@ -89,11 +90,10 @@ const Budgets = () => {
       const docRef = await addDoc(userCollectionRef, newBudget);
       console.log("Budget added with ID: ", docRef.id);
 
-    
       const newBudgetData = {
         ...newBudget,
         id: docRef.id,
-        color: getRandomColor(), 
+        color: getRandomColor(),
       };
 
       setBudgets((prevBudgets) => [...prevBudgets, newBudgetData]);
@@ -126,23 +126,22 @@ const Budgets = () => {
 
   const handleRemoveItem = async (budgetId, itemIndex) => {
     try {
-      // Remove the item from the local state
+      
       const updatedItems = budgets
-        .find(budget => budget.id === budgetId)
+        .find((budget) => budget.id === budgetId)
         .items.filter((_, index) => index !== itemIndex);
-  
+
       const updatedBudget = {
-        ...budgets.find(budget => budget.id === budgetId),
+        ...budgets.find((budget) => budget.id === budgetId),
         items: updatedItems,
       };
-  
 
       const budgetDocRef = doc(db, "users", userId, "budgets", budgetId);
       await updateDoc(budgetDocRef, {
         items: updatedItems,
       });
-  
-     
+
+   
       setBudgets((prevBudgets) =>
         prevBudgets.map((budget) =>
           budget.id === budgetId ? updatedBudget : budget
@@ -152,7 +151,6 @@ const Budgets = () => {
       console.error("Error removing item from budget: ", error);
     }
   };
-  
 
   const handleDeleteBudget = async (budgetId) => {
     try {
@@ -160,7 +158,6 @@ const Budgets = () => {
       await deleteDoc(budgetDocRef);
       console.log(`Budget with ID: ${budgetId} deleted`);
 
-    
       setBudgets((prevBudgets) =>
         prevBudgets.filter((budget) => budget.id !== budgetId)
       );
@@ -181,20 +178,20 @@ const Budgets = () => {
     <div className="flex font-montserrat">
       <Sidebar />
       <div className="flex flex-col w-full h-[625px] overflow-y-auto">
-        <div className="m-2 font-extrabold text-[60px] flex flex-row justify-start items-start">
+        <div className="m-2 font-extrabold text-[60px] flex flex-row justify-start items-center">
           Budgets
+          <button>
+            <PlusIcon
+              className="ml-2"
+              width={50}
+              onClick={() => setShowModal(true)}
+            />
+          </button>
           <img src={foodicon} alt="food icon" width={80} className="ml-2" />
           <img src={travelicon} alt="travel icon" width={80} className="ml-2" />
           <img src={funicon} alt="fun icon" width={80} className="ml-2" />
           <img src={billicon} alt="bill icon" width={80} className="ml-2" />
         </div>
-
-        <button
-          className="w-[150px] bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg m-4"
-          onClick={() => setShowModal(true)}
-        >
-          Add Budget
-        </button>
 
         <div className="grid grid-cols-2 gap-4 mr-2">
           {budgets.map((budget) => {
@@ -208,7 +205,7 @@ const Budgets = () => {
               >
                 <div
                   className="flex flex-row justify-between items-center border-b-2 border-black rounded-tr-xl rounded-tl-xl h-[60px] w-full"
-                  style={{ backgroundColor: budget.color }} 
+                  style={{ backgroundColor: budget.color }}
                 >
                   <h2 className="m-2 font-extrabold text-[32px]">
                     {budget.title}
@@ -230,17 +227,16 @@ const Budgets = () => {
                     <div className="border-2 border-black w-full m-2 rounded-xl p-2">
                       Items:{" "}
                       {budget.items.map((item, index) => (
-  <div key={item.itemID}>
-    {item.name}: ${item.cost}
-    <button
-      onClick={() => handleRemoveItem(budget.id, index)} 
-      className="ml-2 text-red-500"
-    >
-      Remove
-    </button>
-  </div>
-))}
-
+                        <div key={item.itemID}>
+                          {item.name}: ${item.cost}
+                          <button
+                            onClick={() => handleRemoveItem(budget.id, index)} 
+                            className="ml-2 text-red-500"
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      ))}
                     </div>
                   </div>
                   <div className="flex flex-row justify-between w-[90%] mr-auto ml-auto mt-4">
@@ -255,7 +251,7 @@ const Budgets = () => {
                     <div
                       className="bg-[#C7CB85]"
                       style={{
-                        backgroundColor: budget.color, 
+                        backgroundColor: budget.color,
                         width: `${progress}%`,
                       }}
                     ></div>
@@ -317,7 +313,9 @@ const Budgets = () => {
                 <input
                   type="text"
                   value={newItem.name}
-                  onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
+                  onChange={(e) =>
+                    setNewItem({ ...newItem, name: e.target.value })
+                  }
                   className="w-full p-2 border-2 border-gray-300 rounded-lg"
                 />
               </div>
@@ -326,7 +324,9 @@ const Budgets = () => {
                 <input
                   type="number"
                   value={newItem.cost}
-                  onChange={(e) => setNewItem({ ...newItem, cost: parseFloat(e.target.value) })}
+                  onChange={(e) =>
+                    setNewItem({ ...newItem, cost: parseFloat(e.target.value) })
+                  }
                   className="w-full p-2 border-2 border-gray-300 rounded-lg"
                 />
               </div>
