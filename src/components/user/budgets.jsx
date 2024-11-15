@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import Sidebar from "../sidebar/sidebar";
 import foodicon from "../../images/food_icon.svg";
 import travelicon from "../../images/travel_icon.svg";
@@ -31,6 +31,12 @@ const Budgets = () => {
   });
   const auth = getAuth();
 
+  // Array of possible colors
+  const colors = ["#C7CB85", "#E7A977", "#EBBE9B", "#EBBE9B"];
+
+  // Function to get a random color from the array
+  const getRandomColor = () => colors[Math.floor(Math.random() * colors.length)];
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -42,31 +48,32 @@ const Budgets = () => {
     return () => unsubscribe();
   }, [auth]);
 
-  //get budgets
-  const fetchBudgets = useCallback(async () => {
-    if (!userId) return;
+  // Fetch budgets
+  useEffect(() => {
+    const fetchBudgets = async () => {
+      if (!userId) return;
 
-    const getUserCollectionRef = () => {
-      return collection(db, "users", userId, "budgets");
+      const getUserCollectionRef = () => {
+        return collection(db, "users", userId, "budgets");
+      };
+
+      const userCollectionRef = getUserCollectionRef();
+
+      try {
+        const querySnapshot = await getDocs(userCollectionRef);
+        const budgetsData = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+          color: getRandomColor(), // Assign a random color to each budget
+        }));
+        setBudgets(budgetsData);
+      } catch (error) {
+        console.error("Error fetching budgets: ", error);
+      }
     };
 
-    const userCollectionRef = getUserCollectionRef();
-
-    try {
-      const querySnapshot = await getDocs(userCollectionRef);
-      const budgetsData = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setBudgets(budgetsData);
-    } catch (error) {
-      console.error("Error fetching budgets: ", error);
-    }
-  }, [userId]);
-
-  useEffect(() => {
     fetchBudgets();
-  }, [userId, fetchBudgets]);
+  }, [userId]);
 
   const handleAddBudget = async () => {
     console.log("newBudget before validation:", newBudget);
@@ -88,8 +95,6 @@ const Budgets = () => {
 
       setNewBudget({ title: "", amount: 0, items: [], category: "" });
       setShowModal(false);
-
-      fetchBudgets();
     } catch (error) {
       console.error("Error adding budget: ", error);
     }
@@ -126,8 +131,6 @@ const Budgets = () => {
       const budgetDocRef = doc(db, "users", userId, "budgets", budgetId);
       await deleteDoc(budgetDocRef);
       console.log(`Budget with ID: ${budgetId} deleted`);
-
-      fetchBudgets();
     } catch (error) {
       console.error("Error deleting budget: ", error);
     }
@@ -170,7 +173,10 @@ const Budgets = () => {
                 key={budget.id}
                 className="border-2 border-black rounded-xl h-[300px]"
               >
-                <div className="flex flex-row justify-between items-center border-b-2 border-black rounded-tr-xl rounded-tl-xl h-[60px] bg-[#C7CB85] w-full">
+                <div
+                  className="flex flex-row justify-between items-center border-b-2 border-black rounded-tr-xl rounded-tl-xl h-[60px] w-full"
+                  style={{ backgroundColor: budget.color }} // Apply the same random color
+                >
                   <h2 className="m-2 font-extrabold text-[32px]">
                     {budget.title}
                   </h2>
@@ -214,7 +220,10 @@ const Budgets = () => {
                   <div className="flex flex-row h-[30px] w-[90%] m-4 mt-2 mr-auto ml-auto">
                     <div
                       className="bg-[#C7CB85]"
-                      style={{ width: `${progress}%` }}
+                      style={{
+                        backgroundColor: budget.color, // Use the same color for progress bar
+                        width: `${progress}%`,
+                      }}
                     ></div>
                     <div
                       className="bg-[#8F8F8F]"
@@ -228,9 +237,9 @@ const Budgets = () => {
         </div>
 
         {showModal && (
-          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="bg-white rounded-lg p-6 w-[500px]">
-              <h2 className="text-xl font-bold mb-4">Add New Budget</h2>
+          <div className="modal">
+            <div className="modal-content">
+              <h2>Add Budget</h2>
               <div>
                 <label className="block font-semibold">Title:</label>
                 <input
@@ -251,7 +260,6 @@ const Budgets = () => {
                   }
                   className="border w-full rounded-md p-2 mb-4"
                 >
-                  <option value="">Select Category</option>
                   <option value="Food">Food</option>
                   <option value="Travel">Travel</option>
                   <option value="Fun">Fun</option>
@@ -264,24 +272,26 @@ const Budgets = () => {
                   type="number"
                   value={newBudget.amount}
                   onChange={(e) =>
-                    setNewBudget({
-                      ...newBudget,
-                      amount: parseFloat(e.target.value),
-                    })
+                    setNewBudget({ ...newBudget, amount: parseFloat(e.target.value) })
                   }
                   className="border w-full rounded-md p-2 mb-4"
                 />
               </div>
               <div>
                 <label className="block font-semibold">Items:</label>
+                {newBudget.items.map((item, index) => (
+                  <div key={index}>
+                    {item.name}: ${item.cost}
+                  </div>
+                ))}
                 <input
                   type="text"
                   value={newItem.name}
                   onChange={(e) =>
                     setNewItem({ ...newItem, name: e.target.value })
                   }
-                  className="border w-full rounded-md p-2 mb-2"
                   placeholder="Item name"
+                  className="border w-full rounded-md p-2 mb-4"
                 />
                 <input
                   type="number"
@@ -289,24 +299,28 @@ const Budgets = () => {
                   onChange={(e) =>
                     setNewItem({ ...newItem, cost: parseFloat(e.target.value) })
                   }
-                  className="border w-full rounded-md p-2 mb-4"
                   placeholder="Item cost"
+                  className="border w-full rounded-md p-2 mb-4"
                 />
                 <button
                   onClick={handleAddItem}
-                  className="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-md"
+                  className="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg"
                 >
                   Add Item
                 </button>
-                <div className="mt-4">
-                  <button
-                    onClick={handleAddBudget}
-                    className="w-full bg-green-500 hover:bg-green-600 text-white py-2 rounded-md"
-                  >
-                    Save Budget
-                  </button>
-                </div>
               </div>
+              <button
+                onClick={handleAddBudget}
+                className="mt-4 w-full bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-lg"
+              >
+                Save Budget
+              </button>
+              <button
+                onClick={() => setShowModal(false)}
+                className="mt-4 w-full bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-lg"
+              >
+                Cancel
+              </button>
             </div>
           </div>
         )}
