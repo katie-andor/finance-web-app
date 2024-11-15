@@ -34,6 +34,21 @@ const Budgets = () => {
 
   const colors = ["#C7CB85", "#E7A977", "#EBBE9B", "#EBBE9B"];
 
+  const getCategoryIcon = (category) => {
+    switch (category) {
+      case "Food":
+        return foodicon;
+      case "Travel":
+        return travelicon;
+      case "Fun":
+        return funicon;
+      case "Bills":
+        return billicon;
+      default:
+        return foodicon; // Default icon
+    }
+  };
+
   const getRandomColor = () =>
     colors[Math.floor(Math.random() * colors.length)];
 
@@ -126,7 +141,6 @@ const Budgets = () => {
 
   const handleRemoveItem = async (budgetId, itemIndex) => {
     try {
-      
       const updatedItems = budgets
         .find((budget) => budget.id === budgetId)
         .items.filter((_, index) => index !== itemIndex);
@@ -141,7 +155,6 @@ const Budgets = () => {
         items: updatedItems,
       });
 
-   
       setBudgets((prevBudgets) =>
         prevBudgets.map((budget) =>
           budget.id === budgetId ? updatedBudget : budget
@@ -219,8 +232,8 @@ const Budgets = () => {
                 <div className="flex flex-col mt-4">
                   <div className="flex flex-row">
                     <img
-                      src={foodicon}
-                      alt="food icon"
+                      src={getCategoryIcon(budget.category)}
+                      alt={`${budget.category} icon`}
                       width={90}
                       className="m-4"
                     />
@@ -230,7 +243,7 @@ const Budgets = () => {
                         <div key={item.itemID}>
                           {item.name}: ${item.cost}
                           <button
-                            onClick={() => handleRemoveItem(budget.id, index)} 
+                            onClick={() => handleRemoveItem(budget.id, index)}
                             className="ml-2 text-red-500"
                           >
                             Remove
