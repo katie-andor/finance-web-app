@@ -11,7 +11,8 @@ import {
   getDocs,
   addDoc,
   doc,
-  deleteDoc,
+  deleteDoc, 
+  updateDoc,
 } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 
@@ -123,12 +124,35 @@ const Budgets = () => {
     setNewItem({ name: "", cost: 0 });
   };
 
-  const handleRemoveItem = (index) => {
-    setNewBudget((prevState) => {
-      const updatedItems = prevState.items.filter((item, i) => i !== index);
-      return { ...prevState, items: updatedItems };
-    });
+  const handleRemoveItem = async (budgetId, itemIndex) => {
+    try {
+      // Remove the item from the local state
+      const updatedItems = budgets
+        .find(budget => budget.id === budgetId)
+        .items.filter((_, index) => index !== itemIndex);
+  
+      const updatedBudget = {
+        ...budgets.find(budget => budget.id === budgetId),
+        items: updatedItems,
+      };
+  
+
+      const budgetDocRef = doc(db, "users", userId, "budgets", budgetId);
+      await updateDoc(budgetDocRef, {
+        items: updatedItems,
+      });
+  
+     
+      setBudgets((prevBudgets) =>
+        prevBudgets.map((budget) =>
+          budget.id === budgetId ? updatedBudget : budget
+        )
+      );
+    } catch (error) {
+      console.error("Error removing item from budget: ", error);
+    }
   };
+  
 
   const handleDeleteBudget = async (budgetId) => {
     try {
@@ -206,16 +230,17 @@ const Budgets = () => {
                     <div className="border-2 border-black w-full m-2 rounded-xl p-2">
                       Items:{" "}
                       {budget.items.map((item, index) => (
-                        <div key={item.itemID}>
-                          {item.name}: ${item.cost}
-                          <button
-                            onClick={() => handleRemoveItem(index)}
-                            className="ml-2 text-red-500"
-                          >
-                            Remove
-                          </button>
-                        </div>
-                      ))}
+  <div key={item.itemID}>
+    {item.name}: ${item.cost}
+    <button
+      onClick={() => handleRemoveItem(budget.id, index)} 
+      className="ml-2 text-red-500"
+    >
+      Remove
+    </button>
+  </div>
+))}
+
                     </div>
                   </div>
                   <div className="flex flex-row justify-between w-[90%] mr-auto ml-auto mt-4">
