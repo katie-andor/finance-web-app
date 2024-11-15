@@ -12,6 +12,8 @@ import Groups from "./components/user/groups.jsx";
 import Subscriptions from "./components/user/subscriptions.jsx";
 import Budgets from "./components/user/budgets.jsx";
 import Notifications from "./components/user/notifications.jsx";
+import Admin from "./components/admin/admin.jsx";
+import AdminLogin from "./components/auth/login/AdminLogin.jsx";
 
 function App() {
   const routesArray = [
@@ -52,6 +54,14 @@ function App() {
           element: <Notifications />
         },
       ],
+    },
+    {
+      path: "/admin/login",
+      element: <AdminLogin/>
+    },
+    {
+      path: "/admin/dashboard",
+      element: <Admin/>
     },
     {
       path: "*",
