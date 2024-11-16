@@ -10,7 +10,6 @@ import {
   auth,
   collection,
   addDoc,
-  Timestamp,
   query,
   deleteDoc,
   doc,
@@ -22,13 +21,20 @@ const Notifications = () => {
   const [notifications, setNotifications] = useState([]);
   const [newNotification, setNewNotification] = useState({
     title: "",
-    date: "",
-    text: "",
-    isRecurring: false, 
     recurringDay: "", 
+    text: "",
   });
   const [userId, setUserId] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const colors = [
+    "#C7CB85", "#E7A977", "#AB8A78"
+  ];
+
+  const getRandomColor = () => {
+    const randomIndex = Math.floor(Math.random() * colors.length);
+    return colors[randomIndex];
+  };
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -47,6 +53,7 @@ const Notifications = () => {
         const fetchedNotifications = querySnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
+          color: getRandomColor(), 
         }));
         setNotifications(fetchedNotifications);
       });
@@ -68,25 +75,19 @@ const Notifications = () => {
       const notificationData = {
         title: newNotification.title,
         text: newNotification.text,
-        isRecurring: newNotification.isRecurring,
         recurringDay: newNotification.recurringDay,
+        color: getRandomColor(), 
       };
 
-      if (newNotification.isRecurring) {
-        notificationData.date = newNotification.recurringDay;
-      } else {
-        notificationData.date = Timestamp.fromDate(new Date(newNotification.date));
-      }
+      notificationData.date = newNotification.recurringDay;
 
       await addDoc(notificationsRef, notificationData);
 
       setIsModalOpen(false);
       setNewNotification({
         title: "",
-        date: "",
-        text: "",
-        isRecurring: false,
         recurringDay: "",
+        text: "",
       });
     } catch (error) {
       console.error("Error adding notification: ", error);
@@ -104,11 +105,7 @@ const Notifications = () => {
   };
 
   const renderDate = (notification) => {
-    if (notification.isRecurring) {
-      return `Every ${notification.recurringDay} of the month`;
-    } else {
-      return new Date(notification.date.seconds * 1000).toLocaleDateString();
-    }
+    return `Every ${notification.recurringDay} of the month`;
   };
 
   return (
@@ -129,7 +126,7 @@ const Notifications = () => {
         <div className="grid grid-cols-2 gap-4 mr-2 mt-2">
           {notifications.map((notification) => (
             <div key={notification.id} className="border-2 border-black rounded-xl h-[300px]">
-              <div className="flex flex-row justify-between items-center border-b-2 border-black rounded-tr-xl rounded-tl-xl h-[60px] bg-[#C7CB85] w-full">
+              <div className="flex flex-row justify-between items-center border-b-2 border-black rounded-tr-xl rounded-tl-xl h-[60px]" style={{ backgroundColor: notification.color }}>
                 <h2 className="m-2 font-extrabold text-[32px]">{notification.title}</h2>
                 <XMarkIcon
                   width={35}
@@ -170,46 +167,20 @@ const Notifications = () => {
                     required
                   />
                 </div>
-                <div className="mb-4 flex items-center">
-                  <input
-                    type="checkbox"
-                    id="isRecurring"
-                    name="isRecurring"
-                    checked={newNotification.isRecurring}
-                    onChange={(e) => setNewNotification({ ...newNotification, isRecurring: e.target.checked })}
-                    className="mr-2"
-                  />
-                  <label htmlFor="isRecurring" className="font-semibold">Recurring Notification</label>
-                </div>
 
-                {newNotification.isRecurring ? (
-                  <div className="mb-4">
-                    <label className="font-semibold text-lg" htmlFor="recurringDay">Recurring Day</label>
-                    <input
-                      type="number"
-                      id="recurringDay"
-                      name="recurringDay"
-                      value={newNotification.recurringDay}
-                      onChange={handleInputChange}
-                      className="border rounded-xl w-full p-2 mt-2"
-                      placeholder="Enter day of the month (e.g. 29)"
-                      required
-                    />
-                  </div>
-                ) : (
-                  <div className="mb-4">
-                    <label className="font-semibold text-lg" htmlFor="date">Date</label>
-                    <input
-                      type="date"
-                      id="date"
-                      name="date"
-                      value={newNotification.date}
-                      onChange={handleInputChange}
-                      className="border rounded-xl w-full p-2 mt-2"
-                      required
-                    />
-                  </div>
-                )}
+                <div className="mb-4">
+                  <label className="font-semibold text-lg" htmlFor="recurringDay">Recurring Day</label>
+                  <input
+                    type="number"
+                    id="recurringDay"
+                    name="recurringDay"
+                    value={newNotification.recurringDay}
+                    onChange={handleInputChange}
+                    className="border rounded-xl w-full p-2 mt-2"
+                    placeholder="Enter day of the month (1-31)"
+                    required
+                  />
+                </div>
 
                 <div className="mb-4">
                   <label className="font-semibold text-lg" htmlFor="text">Text</label>
