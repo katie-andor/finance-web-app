@@ -31,9 +31,10 @@ const Budgets = () => {
     name: "",
     cost: 0,
   });
+  
   const auth = getAuth();
 
-  const colors = ["#C7CB85", "#E7A977", "#EBBE9B", "#EBBE9B"];
+  const colors = ["#C7CB85", "#E7A977", "#AB8A78"];
 
   const getCategoryIcon = (category) => {
     switch (category) {
