@@ -26,12 +26,15 @@ const Budgets = () => {
     items: [],
     category: "",
   });
-  
+
+  const [showAddItemModal, setShowAddItemModal] = useState(false);
+  const [currentBudgetId, setCurrentBudgetId] = useState(null);
+
   const [newItem, setNewItem] = useState({
     name: "",
     cost: 0,
   });
-  
+
   const auth = getAuth();
 
   const colors = ["#C7CB85", "#E7A977", "#AB8A78"];
@@ -47,7 +50,7 @@ const Budgets = () => {
       case "Bills":
         return billicon;
       default:
-        return foodicon; 
+        return foodicon;
     }
   };
 
@@ -149,6 +152,61 @@ const Budgets = () => {
     setNewItem({ name: "", cost: 0 });
   };
 
+  const handleAddItemToExistingBudget = (budgetId) => {
+    setCurrentBudgetId(budgetId);
+    setShowAddItemModal(true);
+  };
+
+  const saveNewItemToBudget = async () => {
+    if (
+      !newItem.name ||
+      !newItem.cost ||
+      isNaN(newItem.cost) ||
+      newItem.cost <= 0
+    ) {
+      alert("Please provide a valid item name and cost.");
+      return;
+    }
+
+    const budgetToUpdate = budgets.find(
+      (budget) => budget.id === currentBudgetId
+    );
+    if (!budgetToUpdate) {
+      alert("Budget not found.");
+      return;
+    }
+
+    const totalItemsCost = calculateItemTotal(budgetToUpdate.items);
+
+    if (totalItemsCost + newItem.cost > budgetToUpdate.amount) {
+      alert(
+        "Item cost exceeds the total budget amount. Please adjust your items."
+      );
+      return;
+    }
+
+    const updatedItems = [...budgetToUpdate.items, newItem];
+
+    try {
+      const budgetDocRef = doc(db, "users", userId, "budgets", currentBudgetId);
+      await updateDoc(budgetDocRef, { items: updatedItems });
+
+      setBudgets((prevBudgets) =>
+        prevBudgets.map((budget) =>
+          budget.id === currentBudgetId
+            ? { ...budget, items: updatedItems }
+            : budget
+        )
+      );
+
+      setNewItem({ name: "", cost: 0 });
+      setShowAddItemModal(false);
+      alert("Item added successfully.");
+    } catch (error) {
+      console.error("Error adding item to budget: ", error);
+    }
+  };
+
   const handleRemoveItem = async (budgetId, itemIndex) => {
     try {
       const updatedItems = budgets
@@ -234,7 +292,11 @@ const Budgets = () => {
                     {budget.title}
                   </h2>
                   <div className="flex flex-row">
-                    <PlusIcon width={35} className="mr-2 cursor-pointer" />
+                    <PlusIcon
+                      width={35}
+                      className="mr-2 cursor-pointer"
+                      onClick={() => handleAddItemToExistingBudget(budget.id)}
+                    />
                     <XMarkIcon
                       width={35}
                       className="mr-2 cursor-pointer"
@@ -291,6 +353,48 @@ const Budgets = () => {
             );
           })}
         </div>
+
+        {showAddItemModal && (
+          <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center z-50">
+            <div className="bg-white p-6 rounded-lg max-w-lg w-full shadow-lg">
+              <h2>Add Item to Budget</h2>
+              <div>
+                <label className="block font-semibold">Item Name:</label>
+                <input
+                  type="text"
+                  value={newItem.name}
+                  onChange={(e) =>
+                    setNewItem({ ...newItem, name: e.target.value })
+                  }
+                  className="w-full p-2 border-2 border-gray-300 rounded-lg"
+                />
+              </div>
+              <div>
+                <label className="block font-semibold">Item Cost:</label>
+                <input
+                  type="number"
+                  value={newItem.cost}
+                  onChange={(e) =>
+                    setNewItem({ ...newItem, cost: parseFloat(e.target.value) })
+                  }
+                  className="w-full p-2 border-2 border-gray-300 rounded-lg"
+                />
+              </div>
+              <button
+                className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg mt-4"
+                onClick={saveNewItemToBudget}
+              >
+                Save Item
+              </button>
+              <button
+                className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-lg mt-4 ml-4"
+                onClick={() => setShowAddItemModal(false)}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        )}
 
         {showModal && (
           <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center z-50">
