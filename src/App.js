@@ -56,8 +56,14 @@ function App() {
       ],
     },
     {
-      path: "/admin/dashboard",
-      element: <Admin/>
+      path: "/admin",
+      element: <Main/>,
+      children: [
+        {
+          path: "dashboard",
+          element: <Admin/>
+        },
+      ]
     },
     {
       path: "*",
