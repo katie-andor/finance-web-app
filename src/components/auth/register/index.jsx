@@ -40,6 +40,7 @@ const Register = () => {
           uid: user.uid,
           email: user.email,
           createdAt: new Date(),
+          isAdmin: false,
         });
 
         toast.success("Succesfully logged in!");

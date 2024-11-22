@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Navigate, Link } from "react-router-dom";
+import { Navigate, Link, useNavigate } from "react-router-dom";
 import {
   doSignInWithEmailAndPassword,
   doSignInWithGoogle,
@@ -7,25 +7,43 @@ import {
 import { useAuth } from "../../../contexts/authContext";
 import { CurrencyDollarIcon } from "@heroicons/react/24/solid";
 import { toast } from "react-toastify";
+import { getFirestore, doc, getDoc } from "firebase/firestore";
 
 const Login = () => {
-  const { userLoggedIn } = useAuth();
+  const navigate = useNavigate();
+  const { userLoggedIn, user } = useAuth();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSigningIn, setIsSigningIn] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
+  const db = getFirestore();
+
   const onSubmit = async (e) => {
     e.preventDefault();
-    setErrorMessage(""); // Clear any previous errors
+    setErrorMessage("");
+  
     if (!isSigningIn) {
       setIsSigningIn(true);
       try {
-        await doSignInWithEmailAndPassword(email, password);
-        toast.success("Succesfully logged in!", {
-          autoClose: 2000,
-        });
+        const userCredential = await doSignInWithEmailAndPassword(email, password);
+        const user = userCredential.user;
+        const userDocRef = doc(db, "users", user.uid);
+        const userDoc = await getDoc(userDocRef);
+  
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          if (userData.isAdmin) {
+            navigate("/admin/dashboard");
+            toast.success("Successfully logged in as an admin!", { autoClose: 2000 });
+          } else {
+            navigate("/home/dashboard");
+            toast.success("Successfully logged in!", { autoClose: 2000 });
+          }
+        } else {
+          setErrorMessage("User data not found.");
+        }
       } catch (error) {
         setErrorMessage("Your email and password don't match");
       } finally {
@@ -33,12 +51,13 @@ const Login = () => {
       }
     }
   };
+  
 
   const onGoogleSignIn = (e) => {
     e.preventDefault();
     if (!isSigningIn) {
       setIsSigningIn(true);
-      toast.success("Succesfully logged in!");
+      toast.success("Successfully logged in!");
       doSignInWithGoogle().catch((err) => {
         setIsSigningIn(false);
       });
@@ -163,7 +182,7 @@ const Login = () => {
                 </clipPath>
               </defs>
             </svg>
-            {isSigningIn ? "Signing In..." : "Continue with Google"}
+            Sign in with Google
           </button>
         </div>
       </main>
