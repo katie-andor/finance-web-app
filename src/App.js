@@ -12,6 +12,7 @@ import Groups from "./components/user/groups.jsx";
 import Subscriptions from "./components/user/subscriptions.jsx";
 import Budgets from "./components/user/budgets.jsx";
 import Notifications from "./components/user/notifications.jsx";
+import RetirementTrackerPage from "./components/user/retirementTracker"; // Import the RetirementTrackerPage component
 
 function App() {
   const routesArray = [
@@ -45,11 +46,15 @@ function App() {
         },
         {
           path: "budgets",
-          element: <Budgets/>
+          element: <Budgets />,
         },
         {
           path: "notifications",
-          element: <Notifications />
+          element: <Notifications />,
+        },
+        {
+          path: "retirement-tracker",  // New route for Retirement Tracker
+          element: <RetirementTrackerPage />,  // Render the RetirementTrackerPage component
         },
       ],
     },
