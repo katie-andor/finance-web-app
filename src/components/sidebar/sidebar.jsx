@@ -41,10 +41,8 @@ const Sidebar = () => {
           <h2>Recurring <br /> Payments</h2>
         </button>
       </Link>
-      {/* Add Retirement Tracker Button */}
       <Link to="/home/retirement-tracker">
         <button className="font-montserrat font-semibold text-center rounded-md bg-white p-2 w-[160px] ml-2 mr-2 hover:bg-black hover:text-white">
-          <FaMoneyBillWave className="inline-block mr-2" />  {/* Icon added */}
           <h2>Retirement Tracker</h2>
         </button>
       </Link>
