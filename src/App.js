@@ -53,8 +53,8 @@ function App() {
           element: <Notifications />,
         },
         {
-          path: "retirement-tracker",  // New route for Retirement Tracker
-          element: <RetirementTrackerPage />,  // Render the RetirementTrackerPage component
+          path: "retirement-tracker",  
+          element: <RetirementTrackerPage />, 
         },
       ],
     },
