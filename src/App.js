@@ -46,15 +46,15 @@ function App() {
         },
         {
           path: "budgets",
-          element: <Budgets/>
+          element: <Budgets />,
         },
         {
           path: "notifications",
-          element: <Notifications />
+          element: <Notifications />,
         },
         {
           path: "income",
-          element: <Income />
+          element: <Income />,
         },
       ],
     },
