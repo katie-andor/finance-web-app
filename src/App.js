@@ -12,61 +12,66 @@ import Groups from "./components/user/groups.jsx";
 import Subscriptions from "./components/user/subscriptions.jsx";
 import Budgets from "./components/user/budgets.jsx";
 import Notifications from "./components/user/notifications.jsx";
+import RecurringPaymentsPage from "./components/user/recurringPayments"; // Import the RecurringPaymentsPage component
 
 function App() {
-  const routesArray = [
-    {
-      path: "/",
-      element: <Login />,
-    },
-    {
-      path: "/login",
-      element: <Login />,
-    },
-    {
-      path: "/register",
-      element: <Register />,
-    },
-    {
-      path: "/home",
-      element: <Main />,
-      children: [
-        {
-          path: "dashboard",
-          element: <Dashboard />,
-        },
-        {
-          path: "groups",
-          element: <Groups />,
-        },
-        {
-          path: "subscriptions",
-          element: <Subscriptions />,
-        },
-        {
-          path: "budgets",
-          element: <Budgets/>
-        },
-        {
-          path: "notifications",
-          element: <Notifications />
-        },
-      ],
-    },
-    {
-      path: "*",
-      element: <Error />,
-    },
-  ];
+ const routesArray = [
+   {
+     path: "/",
+     element: <Login />,
+   },
+   {
+     path: "/login",
+     element: <Login />,
+   },
+   {
+     path: "/register",
+     element: <Register />,
+   },
+   {
+     path: "/home",
+     element: <Main />,
+     children: [
+       {
+         path: "dashboard",
+         element: <Dashboard />,
+       },
+       {
+         path: "groups",
+         element: <Groups />,
+       },
+       {
+         path: "subscriptions",
+         element: <Subscriptions />,
+       },
+       {
+         path: "budgets",
+         element: <Budgets />,
+       },
+       {
+         path: "notifications",
+         element: <Notifications />,
+       },
+       {
+         path: "recurring-payments",  
+         element: <RecurringPaymentsPage />, 
+       },
+     ],
+   },
+   {
+     path: "*",
+     element: <Error />,
+   },
+ ];
 
-  const routesElement = useRoutes(routesArray);
+ const routesElement = useRoutes(routesArray);
 
-  return (
-    <AuthProvider>
-      {routesElement}
-      <ToastContainer />
-    </AuthProvider>
-  );
+ return (
+   <AuthProvider>
+     {routesElement}
+     <ToastContainer />
+   </AuthProvider>
+ );
 }
 
 export default App;
