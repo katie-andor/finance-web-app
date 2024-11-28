@@ -183,66 +183,64 @@ const Expenses = () => {
   };
 
   return (
-    <div className="flex font-montserrat h-screen">
+    <div className="flex font-montserrat">
       <Sidebar />
 
-      <div className="flex-1 bg-gray-50 p-6">
-        <header className="flex flex-row justify-between items-center mb-6">
-          <div className="flex flex-row items-center">
-            <h1 className="text-[60px] font-extrabold">Expenses</h1>
-            <img src={foodicon} alt="Food Icon" width={80} className="ml-4" />
-            <img src={travelicon} alt="Travel Icon" width={80} className="ml-4" />
-            <img src={funicon} alt="Fun Icon" width={80} className="ml-4" />
-            <img src={billicon} alt="Bill Icon" width={80} className="ml-4" />
-          </div>
-
-          <button
-            className="text-black text-[36px] font-bold"
-            onClick={() => setModalOpen(true)}
-          >
-            <PlusIcon className="h-10 w-10 text-black" />
-          </button>
-        </header>
-
-        <div className="flex justify-between mb-6">
-          <div className="text-red-600 font-bold text-[20px]">Expenses: -${totalExpenses.toFixed(2)}</div>
-          <div className="text-green-600 font-bold text-[20px]">${income.toFixed(2)}</div>
-          <div className="font-bold text-[20px]">Net Total: ${netTotal.toFixed(2)}</div>
-        </div>
-
-        <div className="mb-6">
-          <h2 className="text-2xl font-bold mb-4">Expense Distribution</h2>
-          {Object.keys(categoryTotals).length > 0 ? (
-            <div className="w-[300px] h-[300px] mx-auto">
-              <Pie data={pieChartData} options={{ maintainAspectRatio: false }} />
+      <div className="h-[625px] overflow-y-auto w-full bg-white">
+        <div className="flex-1 p-6">
+          <header className="flex flex-row justify-between items-center mb-6">
+            <div className="flex flex-row items-center">
+              <h1 className="text-[60px] font-extrabold">Expenses</h1>
+              <img src={foodicon} alt="Food Icon" width={80} className="ml-4" />
+              <img src={travelicon} alt="Travel Icon" width={80} className="ml-4" />
+              <img src={funicon} alt="Fun Icon" width={80} className="ml-4" />
+              <img src={billicon} alt="Bill Icon" width={80} className="ml-4" />
             </div>
-          ) : (
-            <p className="text-center text-gray-500">No expenses to display.</p>
-          )}
-        </div>
-
-        <div className="space-y-4">
-          {expenses.map((expense) => (
-            <div
-              key={expense.id}
-              className="flex justify-between items-center bg-white shadow-md rounded-md p-4"
+            <button
+              className="text-black text-[36px] font-bold"
+              onClick={() => setModalOpen(true)}
             >
-              <div>
-                <h2 className="text-lg font-bold">{expense.name}</h2>
-                <p className="text-gray-600">{expense.category}</p>
-                <p className="text-gray-500">Posting Date: {expense.date}</p>
+              <PlusIcon className="h-10 w-10 text-black" />
+            </button>
+          </header>
+          <div className="flex justify-between mb-6">
+            <div className="text-red-600 font-bold text-[20px]">Expenses: -${totalExpenses.toFixed(2)}</div>
+            <div className="text-green-600 font-bold text-[20px]">${income.toFixed(2)}</div>
+            <div className="font-bold text-[20px]">Net Total: ${netTotal.toFixed(2)}</div>
+          </div>
+          <div className="mb-6">
+            <h2 className="text-2xl font-bold mb-4">Expense Distribution</h2>
+            {Object.keys(categoryTotals).length > 0 ? (
+              <div className="w-[300px] h-[300px] mx-auto">
+                <Pie data={pieChartData} options={{ maintainAspectRatio: false }} />
               </div>
-              <div className="flex items-center">
-                <div className="text-xl font-bold mr-4">${expense.amount.toFixed(2)}</div>
-                <button
-                  onClick={() => handleDeleteExpense(expense.id)}
-                  className="text-red-600 hover:text-red-800"
-                >
-                  <TrashIcon className="h-6 w-6" />
-                </button>
+            ) : (
+              <p className="text-center text-gray-500">No expenses to display.</p>
+            )}
+          </div>
+          <div className="space-y-4">
+            {expenses.map((expense) => (
+              <div
+                key={expense.id}
+                className="flex justify-between items-center bg-white shadow-md rounded-md p-4"
+              >
+                <div>
+                  <h2 className="text-lg font-bold">{expense.name}</h2>
+                  <p className="text-gray-600">{expense.category}</p>
+                  <p className="text-gray-500">Posting Date: {expense.date}</p>
+                </div>
+                <div className="flex items-center">
+                  <div className="text-xl font-bold mr-4">${expense.amount.toFixed(2)}</div>
+                  <button
+                    onClick={() => handleDeleteExpense(expense.id)}
+                    className="text-red-600 hover:text-red-800"
+                  >
+                    <TrashIcon className="h-6 w-6" />
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
 
