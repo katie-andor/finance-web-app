@@ -3,7 +3,10 @@ import Sidebar from "../sidebar/sidebar";
 import { Doughnut } from "react-chartjs-2";
 import { Chart, ArcElement, Tooltip, Legend } from "chart.js";
 import { motion } from "framer-motion";
-import { FaDollarSign, FaBriefcase, FaUniversity } from "react-icons/fa"; // Importing icons
+import { FaDollarSign, FaBriefcase, FaUniversity } from "react-icons/fa"; 
+import { db, auth, collection, addDoc, query, deleteDoc, doc, onSnapshot } from "../../firebase/firebase";
+import { onAuthStateChanged } from "firebase/auth";
+
 
 
 Chart.register(ArcElement, Tooltip, Legend);
@@ -25,22 +28,32 @@ const IncomePage = () => {
  ];
 
 
- useEffect(() => {
-   const savedIncomeList = JSON.parse(localStorage.getItem("incomeList"));
-   const savedIncomeGoal = localStorage.getItem("incomeGoal");
-   if (savedIncomeList) {
-     setIncomeList(savedIncomeList);
-   }
-   if (savedIncomeGoal) {
-     setIncomeGoal(savedIncomeGoal);
-   }
- }, []);
+ const [userId, setUserId] = useState(null);
 
+useEffect(() => {
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      setUserId(user.uid);
+    }
+  });
+}, []);
 
- useEffect(() => {
-   localStorage.setItem("incomeList", JSON.stringify(incomeList));
-   localStorage.setItem("incomeGoal", incomeGoal);
- }, [incomeList, incomeGoal]);
+useEffect(() => {
+  if (userId) {
+    const incomeRef = collection(db, "users", userId, "income");
+    const q = query(incomeRef);
+
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const fetchedIncome = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setIncomeList(fetchedIncome);
+    });
+
+    return () => unsubscribe();
+  }
+}, [userId]);
 
 
  const totalIncome = incomeList.reduce((acc, item) => acc + Number(item.amount), 0);
@@ -58,20 +71,39 @@ const IncomePage = () => {
  };
 
 
- const handleAddIncome = () => {
-   const newEntry = {
-     ...newIncome,
-     id: Date.now(),
-     amount: parseFloat(newIncome.amount),
-   };
-   setIncomeList([...incomeList, newEntry]);
-   setNewIncome({ source: "", amount: "", category: "Salary" });
- };
+ const handleAddIncome = async () => {
+  if (!userId) return;
 
+  const newEntry = {
+    ...newIncome,
+    amount: parseFloat(newIncome.amount),
+    category: newIncome.category,
+    createdAt: new Date(),
+  };
 
- const handleDeleteIncome = (id) => {
-   setIncomeList(incomeList.filter((income) => income.id !== id));
- };
+  try {
+    const incomeRef = collection(db, "users", userId, "income");
+    await addDoc(incomeRef, newEntry);
+
+    setNewIncome({ source: "", amount: "", category: "Salary" });
+  } catch (error) {
+    console.error("Error adding income: ", error);
+  }
+};
+
+const handleDeleteIncome = async (id) => {
+  if (!userId) return;
+
+  try {
+    const incomeRef = doc(db, "users", userId, "income", id);
+    await deleteDoc(incomeRef);
+
+    setIncomeList(incomeList.filter((income) => income.id !== id));
+  } catch (error) {
+    console.error("Error deleting income: ", error);
+  }
+};
+
 
 
  const handleGoalChange = (e) => {

@@ -14,6 +14,7 @@ import Budgets from "./components/user/budgets.jsx";
 import Notifications from "./components/user/notifications.jsx";
 import Income from "./components/user/income.jsx";
 
+
 function App() {
   const routesArray = [
     {
