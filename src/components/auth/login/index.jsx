@@ -38,7 +38,7 @@ const Login = () => {
             navigate("/admin/dashboard");
             toast.success("Successfully logged in as an admin!", { autoClose: 2000 });
           } else {
-            navigate("/home/dashboard");
+            navigate("/home/subscriptions");
             toast.success("Successfully logged in!", { autoClose: 2000 });
           }
         } else {
@@ -66,7 +66,7 @@ const Login = () => {
 
   return (
     <div>
-      {userLoggedIn && <Navigate to={"/home/dashboard"} replace={true} />}
+      {userLoggedIn && <Navigate to={"/home/subscriptions"} replace={true} />}
 
       <main className="min-h-screen flex flex-row flex-wrap justify-around items-center">
         <div>

@@ -44,7 +44,7 @@ const Register = () => {
         });
 
         toast.success("Succesfully logged in!");
-        navigate("/home/dashboard");
+        navigate("/home/subscriptions");
       } catch (error) {
         console.error("Error during registration:", error);
         toast.error("There was an error creating your account.");
@@ -57,7 +57,7 @@ const Register = () => {
 
   return (
     <>
-      {userLoggedIn && <Navigate to={"/home/dashboard"} replace={true} />}
+      {userLoggedIn && <Navigate to={"/home/subscriptions"} replace={true} />}
 
       <main className="min-h-screen flex flex-row flex-wrap justify-around items-center">
         <div>
