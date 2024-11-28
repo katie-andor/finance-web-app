@@ -12,7 +12,7 @@ import Groups from "./components/user/groups.jsx";
 import Subscriptions from "./components/user/subscriptions.jsx";
 import Budgets from "./components/user/budgets.jsx";
 import Notifications from "./components/user/notifications.jsx";
-import RecurringPaymentsPage from "./components/user/recurringPayments"; // Import the RecurringPaymentsPage component
+import RecurringPaymentsPage from "./components/user/RecurringPaymentsPage.jsx"; // Import the RecurringPaymentsPage component
 
 function App() {
  const routesArray = [

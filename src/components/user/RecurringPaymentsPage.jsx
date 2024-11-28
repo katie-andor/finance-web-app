@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "../sidebar/sidebar";
 import { motion } from "framer-motion";
+import { db, auth, collection, addDoc, query, deleteDoc, doc, onSnapshot } from "../../firebase/firebase";
+import { onAuthStateChanged } from "firebase/auth";
 
 const RecurringPaymentsPage = () => {
  const [paymentList, setPaymentList] = useState([]);
@@ -11,39 +13,74 @@ const RecurringPaymentsPage = () => {
    frequency: "Monthly",
  });
  const [searchTerm, setSearchTerm] = useState("");
+ const [userId, setUserId] = useState(null);
+
 
  useEffect(() => {
-   const savedPayments = JSON.parse(localStorage.getItem("payments"));
-   if (savedPayments) {
-     setPaymentList(savedPayments);
-   }
+   onAuthStateChanged(auth, (user) => {
+     if (user) {
+       setUserId(user.uid);
+     }
+   });
  }, []);
 
  useEffect(() => {
-   localStorage.setItem("payments", JSON.stringify(paymentList));
- }, [paymentList]);
+   if (userId) {
+     const paymentsRef = collection(db, "users", userId, "payments");
+     const q = query(paymentsRef);
+
+     const unsubscribe = onSnapshot(q, (querySnapshot) => {
+       const fetchedPayments = querySnapshot.docs.map((doc) => ({
+         id: doc.id,
+         ...doc.data(),
+       }));
+       setPaymentList(fetchedPayments);
+     });
+
+     return () => unsubscribe();
+   }
+ }, [userId]);
 
  const handleInputChange = (e) => {
    const { name, value } = e.target;
    setNewPayment({ ...newPayment, [name]: value });
  };
 
- const handleAddPayment = () => {
+ const handleAddPayment = async () => {
+   if (!userId) return;
+
    if (!newPayment.source || !newPayment.amount) {
      alert("Please provide both source and amount.");
      return;
    }
+
    const newEntry = {
      ...newPayment,
-     id: Date.now(),
      amount: parseFloat(newPayment.amount),
+     createdAt: new Date(),
    };
-   setPaymentList([...paymentList, newEntry]);
-   setNewPayment({ source: "", amount: "", category: "Subscription", frequency: "Monthly" });
+
+   try {
+     const paymentsRef = collection(db, "users", userId, "payments");
+     await addDoc(paymentsRef, newEntry);
+
+     setNewPayment({ source: "", amount: "", category: "Subscription", frequency: "Monthly" });
+   } catch (error) {
+     console.error("Error adding payment: ", error);
+   }
  };
 
- const handleDeletePayment = (id) => {
-   setPaymentList(paymentList.filter((payment) => payment.id !== id));
+ const handleDeletePayment = async (id) => {
+   if (!userId) return;
+
+   try {
+     const paymentRef = doc(db, "users", userId, "payments", id);
+     await deleteDoc(paymentRef);
+
+     setPaymentList(paymentList.filter((payment) => payment.id !== id));
+   } catch (error) {
+     console.error("Error deleting payment: ", error);
+   }
  };
 
  const filteredPaymentList = paymentList.filter((payment) =>
@@ -127,10 +164,10 @@ const RecurringPaymentsPage = () => {
              onChange={handleInputChange}
              className="border rounded p-2"
            >
-             <option value="Subscription">Subscription</option>
-             <option value="Rent">Rent</option>
-             <option value="Utilities">Utilities</option>
-             <option value="Loan">Loan</option>
+             <option value="Fun">Fun</option>
+             <option value="Bills">Bills</option>
+             <option value="Travel">Travel</option>
+             <option value="Food">Food</option>
            </select>
          </div>
          <button
