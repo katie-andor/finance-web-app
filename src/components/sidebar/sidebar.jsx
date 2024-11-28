@@ -1,9 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { FaCreditCard, FaMoneyBillWave } from "react-icons/fa";  // Importing icons
 
 const Sidebar = () => {
   return (
-    <div className="m-6 rounded-md w-[180px] h-[600px] bg-[#7EA172] flex flex-col items-center justify-around text-[20px] font-montserrat font-semibold">
+    <div className="m-6 rounded-md w-[180px] h-[700px] bg-[#7EA172] flex flex-col items-center justify-around text-[20px] font-montserrat font-semibold">
       <Link to="/home/dashboard">
         <button className="font-montserrat font-semibold text-center rounded-md bg-white p-2 w-[160px] ml-2 mr-2 hover:bg-black hover:text-white">
           <h2>Dashboard</h2>
@@ -37,6 +38,11 @@ const Sidebar = () => {
       <Link to="/home/recurring-payments">
         <button className="font-montserrat font-semibold text-center rounded-md bg-white p-2 w-[160px] ml-2 mr-2 hover:bg-black hover:text-white">
           <h2>Recurring <br /> Payments</h2>
+        </button>
+      </Link>
+      <Link to="/home/retirement-tracker">
+        <button className="font-montserrat font-semibold text-center rounded-md bg-white p-2 w-[160px] ml-2 mr-2 hover:bg-black hover:text-white">
+          <h2>Retirement Tracker</h2>
         </button>
       </Link>
       <Link to="/home/notifications">
