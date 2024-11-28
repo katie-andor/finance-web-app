@@ -37,7 +37,6 @@ const Sidebar = () => {
       </Link>
       <Link to="/home/recurring-payments">
         <button className="font-montserrat font-semibold text-center rounded-md bg-white p-2 w-[160px] ml-2 mr-2 hover:bg-black hover:text-white">
-          <FaCreditCard className="inline-block mr-2" />
           <h2>Recurring <br /> Payments</h2>
         </button>
       </Link>
