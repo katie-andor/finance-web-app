@@ -8,8 +8,8 @@ const Sidebar = () => {
         <button className="font-montserrat font-semibold text-center rounded-md bg-white p-2 w-[160px] ml-2 mr-2 hover:bg-black hover:text-white">
           <h2>Dashboard</h2>
         </button>
-      </Link>
-      <Link to="/home/groups">
+      </Link> */}
+      {/* <Link to="/home/groups">
         <button className="font-montserrat font-semibold text-center rounded-md bg-white p-2 w-[160px] ml-2 mr-2 hover:bg-black hover:text-white">
           <h2>Groups</h2>
         </button>
@@ -24,14 +24,26 @@ const Sidebar = () => {
           <h2>Budgets</h2>
         </button>
       </Link>
-      <button className="font-montserrat font-semibold text-center rounded-md bg-white p-2 w-[160px] ml-2 mr-2 hover:bg-black hover:text-white">
-        <h2>Expenses & <br/>Income</h2>
-      </button>
-      <button className="font-montserrat font-semibold text-center rounded-md bg-white p-2 w-[160px] ml-2 mr-2 hover:bg-black hover:text-white">
-        <h2>
-          Recurring <br /> Payments
-        </h2>
-      </button>
+      <Link to="/home/expenses">
+        <button className="font-montserrat font-semibold text-center rounded-md bg-white p-2 w-[160px] ml-2 mr-2 hover:bg-black hover:text-white">
+          <h2>Expenses</h2>
+        </button>
+      </Link>
+      <Link to="/home/income">
+        <button className="font-montserrat font-semibold text-center rounded-md bg-white p-2 w-[160px] ml-2 mr-2 hover:bg-black hover:text-white">
+          <h2>Income</h2>
+        </button>
+      </Link>
+      <Link to="/home/recurring-payments">
+        <button className="font-montserrat font-semibold text-center rounded-md bg-white p-2 w-[160px] ml-2 mr-2 hover:bg-black hover:text-white">
+          <h2>Recurring <br /> Payments</h2>
+        </button>
+      </Link>
+      <Link to="/home/retirement-tracker">
+        <button className="font-montserrat font-semibold text-center rounded-md bg-white p-2 w-[160px] ml-2 mr-2 hover:bg-black hover:text-white">
+          <h2>Retirement Tracker</h2>
+        </button>
+      </Link>
       <Link to="/home/notifications">
         <button className="font-montserrat font-semibold text-center rounded-md bg-white p-2 w-[160px] ml-2 mr-2 hover:bg-black hover:text-white">
           <h2>Notifications</h2>

@@ -7,13 +7,18 @@ import { AuthProvider } from "./contexts/authContext";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Main from "./layouts/main.jsx";
-import Dashboard from "./components/user/dashboard.jsx";
-import Groups from "./components/user/groups.jsx";
+// import Dashboard from "./components/user/dashboard.jsx";
+// import Groups from "./components/user/groups.jsx";
 import Subscriptions from "./components/user/subscriptions.jsx";
 import Budgets from "./components/user/budgets.jsx";
 import Notifications from "./components/user/notifications.jsx";
 import Admin from "./components/admin/admin.jsx";
 // import AdminLogin from "./components/auth/login/AdminLogin.jsx";
+import Income from "./components/user/income.jsx";
+import Expenses from "./components/user/expenses.jsx";
+import RetirementTrackerPage from "./components/user/retirementTracker"; // Import the RetirementTrackerPage component
+import RecurringPaymentsPage from "./components/user/RecurringPaymentsPage.jsx"; // Import the RecurringPaymentsPage component
+
 
 function App() {
   const routesArray = [
@@ -33,25 +38,41 @@ function App() {
       path: "/home",
       element: <Main />,
       children: [
-        {
-          path: "dashboard",
-          element: <Dashboard />,
-        },
-        {
-          path: "groups",
-          element: <Groups />,
-        },
+        // {
+        //   path: "dashboard",
+        //   element: <Dashboard />,
+        // },
+        // {
+        //   path: "groups",
+        //   element: <Groups />,
+        // },
         {
           path: "subscriptions",
           element: <Subscriptions />,
         },
         {
           path: "budgets",
-          element: <Budgets/>
+          element: <Budgets />,
         },
         {
           path: "notifications",
-          element: <Notifications />
+          element: <Notifications />,
+        },
+        {
+          path: "income",
+          element: <Income />,
+        },
+        {
+          path: "retirement-tracker",  
+          element: <RetirementTrackerPage />, 
+        },
+        {
+          path: "expenses",
+          element: <Expenses />
+        },
+        {
+         path: "recurring-payments",  
+         element: <RecurringPaymentsPage />, 
         },
       ],
     },
@@ -71,14 +92,14 @@ function App() {
     },
   ];
 
-  const routesElement = useRoutes(routesArray);
+ const routesElement = useRoutes(routesArray);
 
-  return (
-    <AuthProvider>
-      {routesElement}
-      <ToastContainer />
-    </AuthProvider>
-  );
+ return (
+   <AuthProvider>
+     {routesElement}
+     <ToastContainer />
+   </AuthProvider>
+ );
 }
 
 export default App;
