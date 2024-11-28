@@ -157,11 +157,11 @@ const Admin = () => {
       </div>
       <div className="grid grid-cols-2 mb-[200px]">
         {/* Notifications Section */}
-        <div className="text-center">
+        <div className="text-center hover:border-solid hover:border-2 hover:border-[#b9b9b9] hover:rounded-md mx-4">
           <h2 className="text-[35px] font-light">
             Top 3 Users with the Most Notifications
           </h2>
-          <div className="h-[300px] text-[24px] font-light justify-items-center">
+          <div className="h-[300px] text-[24px] font-light justify-items-center ">
             {statistics.topNotifications.length > 0 ? (
               <>
                 <Pie
@@ -194,8 +194,8 @@ const Admin = () => {
           </div>
         </div>
 
-        {/* Income Section */}
-        <div className="text-center">
+      
+        <div className="text-center hover:border-solid hover:border-2 hover:border-[#b9b9b9] hover:rounded-md mx-4">
           <h2 className="text-[35px] font-light">
             Top 3 Users with the Most Income
           </h2>
@@ -232,20 +232,20 @@ const Admin = () => {
         </div>
 <div className="grid grid-cols-3">
   
-          {/* Popular Budget Categories Section */}
-          <div className="text-center">
+       
+          <div className="text-center hover:border-solid hover:border-2 hover:border-[#b9b9b9] hover:rounded-md mx-4">
             <h2 className="text-[35px] font-light">Popular Budget Categories</h2>
             <Pie className="h-[300px]" data={generateCategoryData(popularCategories.budgets)} />
           </div>
   
-          {/* Popular Income Categories Section */}
-          <div className="text-center">
+        
+          <div className="text-center hover:border-solid hover:border-2 hover:border-[#b9b9b9] hover:rounded-md mx-4">
             <h2 className="text-[35px] font-light">Popular Income Categories</h2>
             <Pie className="h-[300px]" data={generateCategoryData(popularCategories.income)} />
           </div>
   
-          {/* Popular Expense Categories Section */}
-          <div className="text-center">
+      
+          <div className="text-center hover:border-solid hover:border-2 hover:border-[#b9b9b9] hover:rounded-md mx-4">
             <h2 className="text-[35px] font-light">Popular Expense Categories</h2>
             <Pie className="h-[300px]" data={generateCategoryData(popularCategories.expenses)} />
           </div>
