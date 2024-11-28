@@ -7,8 +7,8 @@ import { AuthProvider } from "./contexts/authContext";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Main from "./layouts/main.jsx";
-import Dashboard from "./components/user/dashboard.jsx";
-import Groups from "./components/user/groups.jsx";
+// import Dashboard from "./components/user/dashboard.jsx";
+// import Groups from "./components/user/groups.jsx";
 import Subscriptions from "./components/user/subscriptions.jsx";
 import Budgets from "./components/user/budgets.jsx";
 import Notifications from "./components/user/notifications.jsx";
@@ -35,14 +35,14 @@ function App() {
       path: "/home",
       element: <Main />,
       children: [
-        {
-          path: "dashboard",
-          element: <Dashboard />,
-        },
-        {
-          path: "groups",
-          element: <Groups />,
-        },
+        // {
+        //   path: "dashboard",
+        //   element: <Dashboard />,
+        // },
+        // {
+        //   path: "groups",
+        //   element: <Groups />,
+        // },
         {
           path: "subscriptions",
           element: <Subscriptions />,

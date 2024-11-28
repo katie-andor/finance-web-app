@@ -47,7 +47,7 @@ const Login = () => {
 
   return (
     <div>
-      {userLoggedIn && <Navigate to={"/home/dashboard"} replace={true} />}
+      {userLoggedIn && <Navigate to={"/home/subscriptions"} replace={true} />}
 
       <main className="min-h-screen flex flex-row flex-wrap justify-around items-center">
         <div>
