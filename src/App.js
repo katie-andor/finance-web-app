@@ -12,6 +12,7 @@ import Groups from "./components/user/groups.jsx";
 import Subscriptions from "./components/user/subscriptions.jsx";
 import Budgets from "./components/user/budgets.jsx";
 import Notifications from "./components/user/notifications.jsx";
+import Expenses from "./components/user/expenses.jsx";
 import RetirementTrackerPage from "./components/user/retirementTracker"; // Import the RetirementTrackerPage component
 
 function App() {
@@ -55,6 +56,10 @@ function App() {
         {
           path: "retirement-tracker",  
           element: <RetirementTrackerPage />, 
+        },
+        {
+          path: "expenses",
+          element: <Expenses />
         },
       ],
     },
