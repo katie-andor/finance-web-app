@@ -5,8 +5,20 @@ import travelicon from "../../images/travel_icon.svg";
 import funicon from "../../images/fun_icon.svg";
 import billicon from "../../images/bill_icon.svg";
 import { PlusIcon } from "@heroicons/react/24/solid";
+import { TrashIcon } from "@heroicons/react/24/outline"; 
 import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import {
+  db,
+  auth,
+  collection,
+  addDoc,
+  query,
+  deleteDoc,
+  doc,
+  onSnapshot,
+} from "../../firebase/firebase"; 
+import { onAuthStateChanged } from "firebase/auth";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -93,23 +105,62 @@ const Modal = ({ isOpen, close, handleAddExpense }) => {
 };
 
 const Expenses = () => {
-  const [expenses, setExpenses] = useState(() => {
-    const saved = localStorage.getItem("expenses");
-    return saved ? JSON.parse(saved) : [];
-  });
-  const [income, setIncome] = useState(0);
+  const [expenses, setExpenses] = useState([]);
+  const [income, setIncome] = useState(0); 
   const [modalOpen, setModalOpen] = useState(false);
+  const [userId, setUserId] = useState(null);
+
+  useEffect(() => {
+    
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUserId(user.uid);
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    if (userId) {
+      const expensesRef = collection(db, "users", userId, "expenses");
+      const q = query(expensesRef);
+
+      
+      const unsubscribe = onSnapshot(q, (querySnapshot) => {
+        const fetchedExpenses = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setExpenses(fetchedExpenses);
+      });
+
+      return () => unsubscribe();
+    }
+  }, [userId]);
+
+  const handleAddExpense = async (expense) => {
+    if (!userId) return;
+
+    try {
+      const expensesRef = collection(db, "users", userId, "expenses");
+      await addDoc(expensesRef, expense);
+    } catch (error) {
+      console.error("Error adding expense: ", error);
+    }
+  };
+
+  const handleDeleteExpense = async (expenseId) => {
+    if (!userId) return;
+
+    try {
+      const expenseRef = doc(db, "users", userId, "expenses", expenseId);
+      await deleteDoc(expenseRef);
+    } catch (error) {
+      console.error("Error deleting expense: ", error);
+    }
+  };
 
   const totalExpenses = expenses.reduce((sum, exp) => sum + exp.amount, 0);
   const netTotal = income - totalExpenses;
-
-  const handleAddExpense = (expense) => {
-    setExpenses((prevExpenses) => [...prevExpenses, expense]);
-  };
-
-  useEffect(() => {
-    localStorage.setItem("expenses", JSON.stringify(expenses));
-  }, [expenses]);
 
   const categoryTotals = expenses.reduce((totals, expense) => {
     if (!totals[expense.category]) {
@@ -125,12 +176,7 @@ const Expenses = () => {
       {
         label: "Expenses by Category",
         data: Object.values(categoryTotals),
-        backgroundColor: [
-          "#AB8A78", 
-          "#7EA172", 
-          "#C7CB85",
-          "#E7A977" 
-        ],
+        backgroundColor: ["#AB8A78", "#7EA172", "#C7CB85", "#E7A977"],
         borderWidth: 1,
       },
     ],
@@ -166,15 +212,19 @@ const Expenses = () => {
 
         <div className="mb-6">
           <h2 className="text-2xl font-bold mb-4">Expense Distribution</h2>
-          <div className="w-[300px] h-[300px] mx-auto">
-            <Pie data={pieChartData} options={{ maintainAspectRatio: false }} />
-          </div>
+          {Object.keys(categoryTotals).length > 0 ? (
+            <div className="w-[300px] h-[300px] mx-auto">
+              <Pie data={pieChartData} options={{ maintainAspectRatio: false }} />
+            </div>
+          ) : (
+            <p className="text-center text-gray-500">No expenses to display.</p>
+          )}
         </div>
 
         <div className="space-y-4">
-          {expenses.map((expense, index) => (
+          {expenses.map((expense) => (
             <div
-              key={index}
+              key={expense.id}
               className="flex justify-between items-center bg-white shadow-md rounded-md p-4"
             >
               <div>
@@ -182,7 +232,15 @@ const Expenses = () => {
                 <p className="text-gray-600">{expense.category}</p>
                 <p className="text-gray-500">Posting Date: {expense.date}</p>
               </div>
-              <div className="text-xl font-bold">${expense.amount.toFixed(2)}</div>
+              <div className="flex items-center">
+                <div className="text-xl font-bold mr-4">${expense.amount.toFixed(2)}</div>
+                <button
+                  onClick={() => handleDeleteExpense(expense.id)}
+                  className="text-red-600 hover:text-red-800"
+                >
+                  <TrashIcon className="h-6 w-6" />
+                </button>
+              </div>
             </div>
           ))}
         </div>
