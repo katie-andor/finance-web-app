@@ -15,6 +15,7 @@ import Notifications from "./components/user/notifications.jsx";
 import Income from "./components/user/income.jsx";
 import Expenses from "./components/user/expenses.jsx";
 import RetirementTrackerPage from "./components/user/retirementTracker"; // Import the RetirementTrackerPage component
+import RecurringPaymentsPage from "./components/user/RecurringPaymentsPage.jsx"; // Import the RecurringPaymentsPage component
 
 function App() {
   const routesArray = [
@@ -66,6 +67,10 @@ function App() {
           path: "expenses",
           element: <Expenses />
         },
+        {
+         path: "recurring-payments",  
+         element: <RecurringPaymentsPage />, 
+        },
       ],
     },
     {
@@ -74,14 +79,14 @@ function App() {
     },
   ];
 
-  const routesElement = useRoutes(routesArray);
+ const routesElement = useRoutes(routesArray);
 
-  return (
-    <AuthProvider>
-      {routesElement}
-      <ToastContainer />
-    </AuthProvider>
-  );
+ return (
+   <AuthProvider>
+     {routesElement}
+     <ToastContainer />
+   </AuthProvider>
+ );
 }
 
 export default App;
